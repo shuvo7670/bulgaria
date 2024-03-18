@@ -51,6 +51,24 @@ function turio_render_tour_data_booking_form()
         'autocomplete'  => array(),
         'checked'       => array(),
     );
+    $allow_html['select'] = array(
+        'class'         => array(),
+        'id'            => array(),
+        'name'          => array(),
+        'value'         => array(),
+        'type'          => array(),
+        'autocomplete'  => array(),
+        'checked'       => array(),
+    );
+    $allow_html['option'] = array(
+        'class'         => array(),
+        'id'            => array(),
+        'name'          => array(),
+        'value'         => array(),
+        'type'          => array(),
+        'autocomplete'  => array(),
+        'checked'       => array(),
+    );
 
     $product_services_meta_data = get_post_meta($product->get_id(), TURIO_META_ID . '-woocommerce', true);
     $product_children_price = get_post_meta($product->get_id(), 'turio_children_price', true);
@@ -137,19 +155,21 @@ function turio_render_tour_data_booking_form()
         foreach ($tour_booking_date as $key => $single_pack_service) {
             if (!empty($single_pack_service['turio_pack_services'])) {
                 if ($key == 0) {
-                    $product_services_list .= '<div class="d-block single-date-service single-date-service-' . $key . '">';
+                    $product_services_list .= '<div class="d-block tour-services single-date-service single-date-service-' . $key . '">';
                 } else {
-                    $product_services_list .= '<div class="d-none single-date-service single-date-service-' . $key . '">';
+                    $product_services_list .= '<div class="d-none tour-services single-date-service single-date-service-' . $key . '">';
                 }
-                foreach ($single_pack_service['turio_pack_services'] as $__key => $services_List) {
-                    $label = isset($services_List['turio_pack_services_label']) ? esc_html($services_List['turio_pack_services_label']) : '';
-                    $price = isset($services_List['turio_pack_services_price']) ? get_woocommerce_currency_symbol() . esc_html($services_List['turio_pack_services_price']) : '';
-                    $product_services_list .= "<label class='check-container'>$label
-                            <input type='checkbox' class='services_check' name='services_list[]' value='$__key|$key'>
-                            <span class='checkmark'></span>
-                            <span class='price'>$price </span>
-                        </label>";
-                }
+                $product_services_list .= '<div class="adult_services service_adult_1">';
+                    foreach ($single_pack_service['turio_pack_services'] as $__key => $services_List) {
+                        $label = isset($services_List['turio_pack_services_label']) ? esc_html($services_List['turio_pack_services_label']) : '';
+                        $price = isset($services_List['turio_pack_services_price']) ? get_woocommerce_currency_symbol() . esc_html($services_List['turio_pack_services_price']) : '';
+                        $product_services_list .= "<label class='check-container'>$label
+                                <input type='checkbox' class='services_check' name='services_list[]' value='$__key|$key|adult_1'>
+                                <span class='checkmark'></span>
+                                <span class='price'>$price </span>
+                            </label>";
+                    }
+                $product_services_list .= "</div>";
                 $product_services_list .= "</div>";
             }
         }
@@ -220,7 +240,12 @@ function turio_render_tour_data_booking_form()
     </div>
     <hr class="separate-line2">
     <div class="booking-form-item-type">
-        <h5>' . $product_services_heading . '</h5>
+        <div class="tour-service-select">
+            <h5>' . $product_services_heading . '</h5>
+            <select name="service-select" id="service_select">
+                <option value="adult_1">Adult 1</option>
+            </select>
+        </div>
         <div class="checkbox-container">
             ' . $product_services_list . '
         </div>
@@ -326,6 +351,14 @@ add_filter('woocommerce_add_to_cart_redirect', function ($url) {
     return wc_get_cart_url();
 });
 
+
+function formatIdentifier($identifier) {
+    // Replace underscores with spaces and make the first letter of each word uppercase
+    $formatted = ucwords(str_replace('_', ' ', $identifier));
+    
+    return $formatted;
+}
+
 /**
  * Display engraving text in the cart.
  *
@@ -364,7 +397,11 @@ function turio_display_engraving_text_cart($item_data, $cart_item)
         $selected_service_list = '<ul>';
 		foreach ($cart_item['custom_data']['services_list'] as $service) {
 			$get_date_key = explode( '|', $service );
-            $selected_service_list .= '<li>' . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_label'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'] . '</li>';
+            $person = '';
+            if( !empty( $get_date_key[2] ) ) {
+                $person = formatIdentifier( $get_date_key[2] );
+            }
+            $selected_service_list .= '<li>' . $person . ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_label'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'] . '</li>';
 		}
         $selected_service_list .= '</ul>';
         $item_data[] = array(

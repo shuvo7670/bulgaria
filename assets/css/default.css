@@ -457,3 +457,6 @@ body.logged-in.admin-bar .header-area.sticky {
   margin-top: 32px;
   position: fixed;
 }
+.tour-service-select {
+    margin-bottom: 20px;
+}

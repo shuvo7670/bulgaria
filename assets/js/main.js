@@ -660,6 +660,30 @@
     $('#adultsPerson').val(updateAdultPerson);
     productInfo.adultsPerson = updateAdultPerson;
     updateProductPrice();
+
+    // add options when update adult quantity
+    var $select = $('#service_select');
+    var $option = $('<option>', {
+        value: `adult_${updateAdultPerson}`,
+        text: `Adult ${updateAdultPerson}`
+    });
+    $select.append($option);
+    
+      var $clone = $(".d-block.tour-services .service_adult_1").clone();
+
+      $clone.attr('class', 'd-none adult_services service_adult_'+updateAdultPerson+'');
+      $clone.find(".services_check").each(function() {
+          var currentValue = $(this).val();
+          var currentValue = currentValue.replace("|adult_1", "");
+          $(this).val(currentValue + "|adult_"+updateAdultPerson+"");
+      });
+      $clone.appendTo(".d-block.tour-services");
+  });
+
+  $(document).on('change', '#service_select', function(event){
+    const option_val = $(this).val();
+    $('.d-block .adult_services').addClass('d-none').removeClass('d-block');
+    $('.d-block .service_'+option_val+'').removeClass('d-none').addClass('d-block');
   });
 
   $('.booking-form-item-type .adults .minus-qty').click(function () {
@@ -672,6 +696,7 @@
       productInfo.adultsPerson = updateAdultPerson;
       updateProductPrice();
     }
+    $("#service_select option[value='adult_"+adultsPerson+"']").remove();
   });
 
   // Update Children Quantity 
@@ -731,7 +756,7 @@
     });
   })
 
-  $('.services_check').click(function () {
+  $(document).on('click', '.services_check', (function () {
     if ($(this).is(":checked")) {
       productInfo.servicesList.push($(this).val());
       updateProductPrice();
@@ -740,7 +765,7 @@
       productInfo.servicesList = servicesList;
       updateProductPrice();
     };
-  });
+  }));
   $('.radio-item-pick [name="picking_point"]').change(function () {
     productInfo.pickup_point = $(this).val();
     updateProductPrice();
