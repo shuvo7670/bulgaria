@@ -193,6 +193,7 @@ function turio_render_tour_data_booking_form()
                 } else {
                     $tour_pickup_list .= '<div class="d-none radio-item-pick single-date-service single-date-service-' . $key . '">';
                 }
+                $tour_pickup_list .= '<input name="picking_point" type="hidden">';
                 $tour_pickup_list .= '<select id="choose-pickup-point" class="defult-select-drowpown">';
                 $tour_pickup_list .= '<option>Select pickup points</option>';
                 foreach ($single_pickup_point['turio_pack_pickup_point'] as $__key => $single_point) {
@@ -200,7 +201,7 @@ function turio_render_tour_data_booking_form()
                     $plane_number = isset($single_point['turio_pack_plane_number']) ? esc_html($single_point['turio_pack_plane_number']) : '';
                     $take_of_time = isset($single_point['turio_pack_take_off_time']) ? esc_html($single_point['turio_pack_take_off_time']) : '';
                     $price = isset($single_point['turio_pack_pickup_point_price']) ? get_woocommerce_currency_symbol() . esc_html($single_point['turio_pack_pickup_point_price']) : '';
-                    $tour_pickup_list .= '<option value="'.$__key . '|' . $key.'"> '.$label.'-'.$price.'</option>';
+                    $tour_pickup_list .= '<option value="'.$__key . '|' . $key . '|'. $plane_number. '|'. $take_of_time . '|'. $label .'"> '.$label.'-'.$price.'</option>';
                     // $tour_pickup_list .= '<label>
                     //     <input name="picking_point" value="'.$__key . '|' . $key.'" type="radio">
                     //     <div class="pick-point-details">
@@ -213,6 +214,8 @@ function turio_render_tour_data_booking_form()
                 }
                 $tour_pickup_list .= '<option value="others">Others</option>';
                 $tour_pickup_list .= '</select>';
+                $tour_pickup_list .= '<div id="show-pickup-points" class="show-pickup-points">';
+                $tour_pickup_list .= '</div>';
                 $tour_pickup_list .= "</div>";
             }
         }

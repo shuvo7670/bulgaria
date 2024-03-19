@@ -653,9 +653,33 @@
     servicesList  : [],
   }
 
+
+  function createAndAppendInfo(info) {
+    const show_pickup_points = document.getElementById("show-pickup-points");
+    show_pickup_points.innerHTML = '';
+    info.forEach(item => {
+        const span = document.createElement("span");
+        span.textContent = `${item.label} : ${item.value}`;
+        show_pickup_points.appendChild(span);
+        show_pickup_points.appendChild(document.createElement("br"));
+    });
+  }
+
   // select pickup point
   $('#choose-pickup-point').change(function(event){
-    productInfo.pickup_point = $(this).val();
+    const pickupPoint = $(this).val();
+    var parts = pickupPoint.split("|");
+    var data = parts.slice(2).join("|");
+    $('input[name="picking_point"]').val(parts[0] + "|" + parts[1]);
+    data = data.split('|');
+    const info = [
+      { label: "Pickup Point", value: data[2] },
+      { label: "Plane Number", value: data[0] },
+      { label: "Take Off Time", value: data[1] },
+    ];
+    createAndAppendInfo(info);
+    productInfo.pickup_point = parts[0] + "|" + parts[1];
+    // console.log(productInfo, data);
     updateProductPrice();
   })
 

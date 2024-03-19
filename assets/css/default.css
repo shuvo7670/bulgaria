@@ -460,3 +460,9 @@ body.logged-in.admin-bar .header-area.sticky {
 .tour-service-select {
     margin-bottom: 20px;
 }
+div#show-pickup-points span {
+    font-size: 13px;
+}
+.single-date-service #show-pickup-points {
+    margin-top: 10px;
+}
