@@ -159,7 +159,7 @@ function turio_render_tour_data_booking_form()
                 } else {
                     $product_services_list .= '<div class="d-none tour-services single-date-service single-date-service-' . $key . '">';
                 }
-                $product_services_list .= '<div class="adult_services service_adult_1">';
+                $product_services_list .= '<div class="adult_children adult_services service_adult_1">';
                     foreach ($single_pack_service['turio_pack_services'] as $__key => $services_List) {
                         $label = isset($services_List['turio_pack_services_label']) ? esc_html($services_List['turio_pack_services_label']) : '';
                         $price = isset($services_List['turio_pack_services_price']) ? get_woocommerce_currency_symbol() . esc_html($services_List['turio_pack_services_price']) : '';
@@ -193,31 +193,26 @@ function turio_render_tour_data_booking_form()
                 } else {
                     $tour_pickup_list .= '<div class="d-none radio-item-pick single-date-service single-date-service-' . $key . '">';
                 }
+                $tour_pickup_list .= '<select id="choose-pickup-point" class="defult-select-drowpown">';
+                $tour_pickup_list .= '<option>Select pickup points</option>';
                 foreach ($single_pickup_point['turio_pack_pickup_point'] as $__key => $single_point) {
                     $label = isset($single_point['turio_pack_pickup_point_label']) ? esc_html($single_point['turio_pack_pickup_point_label']) : '';
                     $plane_number = isset($single_point['turio_pack_plane_number']) ? esc_html($single_point['turio_pack_plane_number']) : '';
                     $take_of_time = isset($single_point['turio_pack_take_off_time']) ? esc_html($single_point['turio_pack_take_off_time']) : '';
                     $price = isset($single_point['turio_pack_pickup_point_price']) ? get_woocommerce_currency_symbol() . esc_html($single_point['turio_pack_pickup_point_price']) : '';
-                    // $checked = '';
-                    // if( $__key == 0 ) {
-                    //     $checked = 'checked';
-                    // }
-                    $tour_pickup_list .= '<label>
-                        <input name="picking_point" value="'.$__key . '|' . $key.'" type="radio">
-                        <div class="pick-point-details">
-                            <span>'.$label.'</span>
-                            <span>'. $plane_number .'</span>
-                            <span>'. $take_of_time .'</span>
-                            <span>'.$price.'</span>
-                        </div>
-                    </label>';
+                    $tour_pickup_list .= '<option value="'.$__key . '|' . $key.'"> '.$label.'-'.$price.'</option>';
+                    // $tour_pickup_list .= '<label>
+                    //     <input name="picking_point" value="'.$__key . '|' . $key.'" type="radio">
+                    //     <div class="pick-point-details">
+                    //         <span>'.$label.'</span>
+                    //         <span>'. $plane_number .'</span>
+                    //         <span>'. $take_of_time .'</span>
+                    //         <span>'.$price.'</span>
+                    //     </div>
+                    // </label>';
                 }
-                $tour_pickup_list .= '<label>
-                        <input name="picking_point" value="others" type="radio">
-                        <div class="pick-point-details">
-                            <span>Others</span>
-                        </div>
-                    </label>';
+                $tour_pickup_list .= '<option value="others">Others</option>';
+                $tour_pickup_list .= '</select>';
                 $tour_pickup_list .= "</div>";
             }
         }
@@ -398,7 +393,9 @@ function turio_display_engraving_text_cart($item_data, $cart_item)
 		foreach ($cart_item['custom_data']['services_list'] as $service) {
 			$get_date_key = explode( '|', $service );
             $person = '';
-            if( !empty( $get_date_key[2] ) ) {
+            if( !empty( $get_date_key[3] ) ) {
+                $person = formatIdentifier( $get_date_key[3] );
+            }else if( !empty( $get_date_key[2] ) ) {
                 $person = formatIdentifier( $get_date_key[2] );
             }
             $selected_service_list .= '<li>' . $person . ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_label'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'] . '</li>';

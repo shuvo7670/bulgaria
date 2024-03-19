@@ -652,6 +652,14 @@
     pickup_point  : '',
     servicesList  : [],
   }
+
+  // select pickup point
+  $('#choose-pickup-point').change(function(event){
+    productInfo.pickup_point = $(this).val();
+    updateProductPrice();
+  })
+
+
   $('.booking-form-item-type .adults .plus-qty').click(function () {
 
     // Get adults person number
@@ -661,6 +669,7 @@
     productInfo.adultsPerson = updateAdultPerson;
     updateProductPrice();
 
+    
     // add options when update adult quantity
     var $select = $('#service_select');
     var $option = $('<option>', {
@@ -671,7 +680,7 @@
     
       var $clone = $(".d-block.tour-services .service_adult_1").clone();
 
-      $clone.attr('class', 'd-none adult_services service_adult_'+updateAdultPerson+'');
+      $clone.attr('class', 'd-none adult_children adult_services service_adult_'+updateAdultPerson+'');
       $clone.find(".services_check").each(function() {
           var currentValue = $(this).val();
           var currentValue = currentValue.replace("|adult_1", "");
@@ -682,8 +691,13 @@
 
   $(document).on('change', '#service_select', function(event){
     const option_val = $(this).val();
-    $('.d-block .adult_services').addClass('d-none').removeClass('d-block');
+    // if( option_val.includes('adult') ) {
+    //   $('.d-block .adult_services').addClass('d-none').removeClass('d-block');
+    // }else{
+    // }
+    $('.d-block .adult_children').addClass('d-none').removeClass('d-block');
     $('.d-block .service_'+option_val+'').removeClass('d-none').addClass('d-block');
+
   });
 
   $('.booking-form-item-type .adults .minus-qty').click(function () {
@@ -708,18 +722,35 @@
     $('#childrenPerson').val(updateChildrenPrice);
     productInfo.childrenPerson = updateChildrenPrice;
     updateProductPrice();
+    // add options when update adult quantity
+    var $select = $('#service_select');
+    var $option = $('<option>', {
+        value: `children_${updateChildrenPrice}`,
+        text: `Children ${updateChildrenPrice}`
+    });
+    $select.append($option);
+      var $clone = $(".d-block.tour-services .service_adult_1").clone();
+      $clone.attr('class', 'd-none adult_children children_services service_children_'+updateChildrenPrice+'');
+      $clone.find(".services_check").each(function() {
+          var currentValue = $(this).val();
+          var currentValue = currentValue.replace("|children_1", "");
+          $(this).val(currentValue + "|children_"+updateChildrenPrice+"");
+      });
+      $clone.appendTo(".d-block.tour-services");
+
   });
 
   // Update Children Quantity 
   $('.booking-form-item-type .children .minus-qty').click(function () {
 
-    // Get adults person number
+    // Get children person number
     var childrenPerson = $('#childrenPerson').val();
     var updateChildrenPrice = parseInt(childrenPerson) - 1;
     if (!(updateChildrenPrice < 0)) {
       $('#childrenPerson').val(updateChildrenPrice);
       productInfo.childrenPerson = updateChildrenPrice;
       updateProductPrice();
+      $("#service_select option[value='children_"+childrenPerson+"']").remove();
     }
 
   });
@@ -766,10 +797,10 @@
       updateProductPrice();
     };
   }));
-  $('.radio-item-pick [name="picking_point"]').change(function () {
-    productInfo.pickup_point = $(this).val();
-    updateProductPrice();
-  });
+  // $('.radio-item-pick [name="picking_point"]').change(function () {
+  //   productInfo.pickup_point = $(this).val();
+  //   updateProductPrice();
+  // });
 
   // Service checkbox update
   $('.radio-item #datepicker').click(function () {
