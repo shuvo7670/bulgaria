@@ -718,7 +718,6 @@
     const option_val = $(this).val();
     $('.d-block .adult_children').addClass('d-none').removeClass('d-block');
     $('.d-block .service_'+option_val+'').removeClass('d-none').addClass('d-block');
-
   });
 
   $('.booking-form-item-type .adults .minus-qty').click(function () {
@@ -732,6 +731,9 @@
       productInfo.servicesList = filteredServices;
       $("#service_select option[value='adult_"+adultsPerson+"']").remove();
       $(".adult_services.service_adult_"+adultsPerson+"").remove();
+      $("#service_select option:first").prop("selected", true);
+      $('.d-block .adult_children').addClass('d-none').removeClass('d-block');
+      $('.d-block .service_adult_1').removeClass('d-none').addClass('d-block');
       updateProductPrice();
     }
   });
@@ -777,6 +779,9 @@
       $(".children_services.service_adult_"+childrenPerson+"").remove();
       let filteredServices = productInfo.servicesList.filter(item => !item.includes("|children_"+childrenPerson+""));
       productInfo.servicesList = filteredServices;
+      $("#service_select option:first").prop("selected", true);
+      $('.d-block .adult_children').addClass('d-none').removeClass('d-block');
+      $('.d-block .service_adult_1').removeClass('d-none').addClass('d-block');
       updateProductPrice();
     }
   });
