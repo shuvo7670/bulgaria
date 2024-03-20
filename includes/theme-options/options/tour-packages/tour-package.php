@@ -157,25 +157,21 @@ if (class_exists('CSF')) {
 								'id'    => 'turio_pack_pickup_point_label',
 								'type'  => 'text',
 								'title' => esc_html('Pickup Point Label', 'turio'),
-								'default' => esc_html('Budapest', 'turio'),
 							),
 							array(
 								'id'    => 'turio_pack_plane_number',
 								'type'  => 'text',
 								'title' => esc_html('Plane Number', 'turio'),
-								'default' => esc_html('F2332', 'turio'),
 							),
 							array(
 								'id'    => 'turio_pack_take_off_time',
 								'type'  => 'text',
 								'title' => esc_html('Take Off Time', 'turio'),
-								'default' => esc_html('10:00 AM', 'turio'),
 							),
 							array(
 								'id'    => 'turio_pack_pickup_point_price',
 								'type'  => 'number',
 								'title' => esc_html($pickup_price, 'turio'),
-								'default' => '10',
 							),
 
 						)

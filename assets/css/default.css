@@ -466,3 +466,6 @@ div#show-pickup-points span {
 .single-date-service #show-pickup-points {
     margin-top: 10px;
 }
+.single-date-service .select2-container {
+    width: 100% !important;
+}

@@ -666,7 +666,7 @@
   }
 
   // select pickup point
-  $('#choose-pickup-point').change(function(event){
+  $(document).on('change', '#choose-pickup-point',(function(event){
     const pickupPoint = $(this).val();
     var parts = pickupPoint.split("|");
     var data = parts.slice(2).join("|");
@@ -674,14 +674,19 @@
     data = data.split('|');
     const info = [
       { label: "Pickup Point", value: data[2] },
-      { label: "Plane Number", value: data[0] },
-      { label: "Take Off Time", value: data[1] },
     ];
+
+    if( data[0] ) {
+      info.push({ label: "Plane Number", value: data[0] });
+    }if( data[1] ) {
+      info.push({ label: "Take Off Time", value: data[1] });
+    }
+
     createAndAppendInfo(info);
     productInfo.pickup_point = parts[0] + "|" + parts[1];
     // console.log(productInfo, data);
     updateProductPrice();
-  })
+  }));
 
 
   $('.booking-form-item-type .adults .plus-qty').click(function () {
