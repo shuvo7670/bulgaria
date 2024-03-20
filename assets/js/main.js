@@ -701,7 +701,6 @@
         value: `adult_${updateAdultPerson}`,
         text: `Adult ${updateAdultPerson}`
     });
-    $select.append($option);
       $select.append($option);
       var $clone = $(".d-block.tour-services .service_adult_1").clone();
       $clone.attr('class', 'd-none adult_children adult_services service_adult_'+updateAdultPerson+'');
