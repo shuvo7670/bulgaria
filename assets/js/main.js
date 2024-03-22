@@ -776,7 +776,7 @@
       $('#childrenPerson').val(updateChildrenPrice);
       productInfo.childrenPerson = updateChildrenPrice;
       $("#service_select option[value='children_"+childrenPerson+"']").remove();
-      $(".children_services.service_adult_"+childrenPerson+"").remove();
+      $(".children_services.service_children_"+childrenPerson+"").remove();
       let filteredServices = productInfo.servicesList.filter(item => !item.includes("|children_"+childrenPerson+""));
       productInfo.servicesList = filteredServices;
       $("#service_select option:first").prop("selected", true);

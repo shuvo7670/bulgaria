@@ -134,3 +134,16 @@ require TURIO_INC . '/functions/woocommerce.php';
  * Woocommerce Custom Functions.
  */
 require TURIO_INC . '/functions/ajax-handler.php';
+
+
+add_filter('woocommerce_order_item_permalink', 'customize_order_product_permalink', 10, 3);
+
+function customize_order_product_permalink($permalink, $item, $order) {
+    // Check if the product ID is available and the permalink contains '/product/'
+    if ($item->get_product_id() && strpos($permalink, '/product/') !== false) {
+        // Replace '/product/' with '/tour/' in the permalink
+        $permalink = str_replace('/product/', '/tour/', $permalink);
+    }
+
+    return $permalink;
+}
