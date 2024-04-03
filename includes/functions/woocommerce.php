@@ -230,7 +230,7 @@ function turio_render_tour_data_booking_form()
             ' . $product_booking_date . '
         <div class="radio-item">
             <span class="custom-date">' . esc_html__('Custom Date', 'turio') . '</span>
-            <label><input name="tour_booking_date" id="customTourBookingDate" type="radio"></input><input placeholder="' . esc_attr('Custom date') . '" type="text" name="tour_booking_date" id="customDateDatepicker" value="' . Date('Y-m-d') . '" class="calendar" autocomplete="off"></label>
+            <label><input name="tour_booking_date" value="custom" id="customTourBookingDate" type="radio"></input><input placeholder="' . esc_attr('Custom date') . '" type="text" name="custom_tour_booking_date" id="customDateDatepicker" value="' . Date('Y-m-d') . '" class="calendar" autocomplete="off"></label>
         </div>
     </div>
     <div class="booking-form-item-type">
@@ -281,7 +281,11 @@ function turio_add_tour_data_to_cart($cart_item_data, $product_id)
     }
 
     if (isset($_REQUEST['tour_booking_date'])) {
-        $cart_item_data['custom_data']['tour_booking_date'] = (!empty($_REQUEST['tour_booking_date'])) ? sanitize_text_field($_REQUEST['tour_booking_date']) : '';
+        if( $_REQUEST['tour_booking_date'] == 'custom' ) {
+            $cart_item_data['custom_data']['tour_booking_date'] = (!empty($_REQUEST['custom_tour_booking_date'])) ? sanitize_text_field($_REQUEST['custom_tour_booking_date']) : '';
+        }else{
+            $cart_item_data['custom_data']['tour_booking_date'] = (!empty($_REQUEST['tour_booking_date'])) ? sanitize_text_field($_REQUEST['tour_booking_date']) : '';
+        }
     }
 
     if (isset($_REQUEST['services_list'])) {
@@ -414,9 +418,14 @@ function turio_display_engraving_text_cart($item_data, $cart_item)
     if (isset($cart_item['custom_data']['picking_point']) && $cart_item['custom_data']['picking_point'] != 'others') {
         $tour_booking_date = Egns_Helpers::turio_package_info_by_id($cart_item['custom_data']['tour_id'], 'tour_date');
         $get_date_key = explode( '|', $cart_item['custom_data']['picking_point'] );
-        $selected_pickup_point = '<ul>';
-        $selected_pickup_point .= '<li>' . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_pickup_point_label'] .  ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_plane_number'] .  ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_take_off_time'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_pickup_point_price'] . '</li>';
-        $selected_pickup_point .= '</ul>';
+        if( count( $get_date_key ) > 1 ) {
+            $selected_pickup_point = '<ul>';
+            $selected_pickup_point .= '<li>' . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_pickup_point_label'] .  ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_plane_number'] .  ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_take_off_time'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_pickup_point'][$get_date_key[0]]['turio_pack_pickup_point_price'] . '</li>';
+            $selected_pickup_point .= '</ul>';
+        }else{
+            $selected_pickup_point = "Others";
+        }
+
         $item_data[] = array(
             'key'     => esc_html__('Pickup Points', 'turio'),
             'value'   => wp_kses_post($selected_pickup_point),
