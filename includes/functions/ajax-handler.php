@@ -80,11 +80,16 @@ add_action('wp_enqueue_scripts', 'egens_frontend_ajax_handler_scripts');
 
 function calculate_service_list_price( $service_items, $tour_id ) {
 	if( !empty( $service_items ) ) {
-		$tour_booking_date = Egns_Helpers::turio_package_info_by_id($tour_id, 'tour_date');
+		$tour_booking_date             = Egns_Helpers::turio_package_info_by_id($tour_id, 'tour_date');
+		$service_price_for_custom_date = Egns_Helpers::turio_package_info_by_id($tour_id, 'turio_custom_date_pack_services');
 		$service_price = 0;
 		foreach ($service_items as $service) {
 			$get_date_key = explode( '|', $service );
-			$service_price += $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'];
+			if( count( $get_date_key ) <= 2 ) {
+				$service_price += $service_price_for_custom_date[$get_date_key[0]]['turio_custom_date_pack_services_price'];
+			}else{
+				$service_price += $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'];
+			}
 		}
 	}
 	return $service_price;

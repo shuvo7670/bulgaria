@@ -827,6 +827,7 @@
       productInfo.servicesList = servicesList;
       updateProductPrice();
     };
+    console.log('product-info', productInfo);
   }));
   // $('.radio-item-pick [name="picking_point"]').change(function () {
   //   productInfo.pickup_point = $(this).val();
@@ -969,15 +970,27 @@
   // Service handler
   $(document).on('click', '.sidebar-booking-form .radio-item', function (event) {
     const service_id = $(this).attr('id');
-    $('.single-date-service').addClass('d-none').removeClass('d-block');
-    $("." + service_id).addClass('d-block').removeClass('d-none');
-    productInfo.pickup_point = '';
-    productInfo.servicesList = [];
-    $('.services_check').each(function () {
-      $(this).removeAttr('checked');
-    });
-    $('.radio-item-pick [name="picking_point"]').removeAttr('checked');
-    updateProductPrice();
+    if( service_id ) {
+      $('.single-date-service').addClass('d-none').removeClass('d-block');
+      $("." + service_id).addClass('d-block').removeClass('d-none');
+      productInfo.pickup_point = '';
+      productInfo.servicesList = [];
+      $('.services_check').each(function () {
+        $(this).removeAttr('checked');
+      });
+      $('.radio-item-pick [name="picking_point"]').removeAttr('checked');
+      updateProductPrice();
+    }else{
+      $('.single-date-service').addClass('d-none').removeClass('d-block');
+      $(".single-date-service-custom").addClass('d-block').removeClass('d-none');
+      productInfo.pickup_point = '';
+      productInfo.servicesList = [];
+      $('.services_check').each(function () {
+        $(this).removeAttr('checked');
+      });
+      $('.radio-item-pick [name="picking_point"]').removeAttr('checked');
+      updateProductPrice();
+    }
   });
 
   

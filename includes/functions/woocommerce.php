@@ -75,6 +75,7 @@ function turio_render_tour_data_booking_form()
 
     // Prepare Booking Date 
     $tour_booking_date = Egns_Helpers::turio_package_info('tour_date');
+    $turio_custom_date_pack_services = Egns_Helpers::turio_package_info('turio_custom_date_pack_services');
 
     $product_booking_date = '';
     $checked_first_item = '';
@@ -151,11 +152,16 @@ function turio_render_tour_data_booking_form()
     $product_services_list = '';
     $product_services_heading = '';
     $product_services_heading = esc_html__('Other Extra Services', 'turio');
+
     if (!empty($tour_booking_date)) {
         foreach ($tour_booking_date as $key => $single_pack_service) {
             if (!empty($single_pack_service['turio_pack_services'])) {
                 if ($key == 0) {
-                    $product_services_list .= '<div class="d-block tour-services single-date-service single-date-service-' . $key . '">';
+                    if( is_array( $turio_custom_date_pack_services ) && count( $turio_custom_date_pack_services ) > 0 ) {
+                        $product_services_list .= '<div class="d-none tour-services single-date-service single-date-service-' . $key . '">';
+                    }else{
+                        $product_services_list .= '<div class="d-block tour-services single-date-service single-date-service-' . $key . '">';
+                    }
                 } else {
                     $product_services_list .= '<div class="d-none tour-services single-date-service single-date-service-' . $key . '">';
                 }
@@ -174,9 +180,27 @@ function turio_render_tour_data_booking_form()
             }
         }
     }
-
-
-
+    
+    // Extra services for custom date
+    if (!empty($turio_custom_date_pack_services)) {
+        if( is_array( $turio_custom_date_pack_services ) && count( $turio_custom_date_pack_services ) > 0 ) {
+            $product_services_list .= '<div class="d-block tour-services single-date-service single-date-service-custom">';
+        }else{
+            $product_services_list .= '<div class="d-none tour-services single-date-service single-date-service-custom">';
+        }
+            $product_services_list .= '<div class="adult_children adult_services service_adult_1">';
+            foreach ($turio_custom_date_pack_services as $__key => $services_List) {
+                $label = isset($services_List['turio_custom_date_pack_services_label']) ? esc_html($services_List['turio_custom_date_pack_services_label']) : '';
+                $price = isset($services_List['turio_custom_date_pack_services_price']) ? get_woocommerce_currency_symbol() . esc_html($services_List['turio_custom_date_pack_services_price']) : '';
+                $product_services_list .= "<label class='check-container'>$label
+                        <input type='checkbox' class='services_check' name='services_list[]' value='$__key|adult_1'>
+                        <span class='checkmark'></span>
+                        <span class='price'>$price </span>
+                    </label>";
+            }
+            $product_services_list .= '</div>';
+        $product_services_list .= '</div>';
+    }
     // Prepare Booking Date 
     $tour_booking_date = Egns_Helpers::turio_package_info('tour_date');
     // Prepare pickup point meta data
@@ -220,6 +244,11 @@ function turio_render_tour_data_booking_form()
             }
         }
     }
+    $turio_custom_date_pack_services = Egns_Helpers::turio_package_info('turio_custom_date_pack_services');
+    $custom_date_selected = '';
+    if( is_array( $turio_custom_date_pack_services ) && count( $turio_custom_date_pack_services ) > 0 ) {
+       $custom_date_selected = 'checked';
+    }
 
     // Main form before markup
     $tour_id = get_the_ID();
@@ -230,7 +259,7 @@ function turio_render_tour_data_booking_form()
             ' . $product_booking_date . '
         <div class="radio-item">
             <span class="custom-date">' . esc_html__('Custom Date', 'turio') . '</span>
-            <label><input name="tour_booking_date" value="custom" id="customTourBookingDate" type="radio"></input><input placeholder="' . esc_attr('Custom date') . '" type="text" name="custom_tour_booking_date" id="customDateDatepicker" value="' . Date('Y-m-d') . '" class="calendar" autocomplete="off"></label>
+            <label><input name="tour_booking_date" value="custom" id="customTourBookingDate"  type="radio" '.$custom_date_selected.'></input><input placeholder="' . esc_attr('Custom date') . '" type="text" name="custom_tour_booking_date" id="customDateDatepicker" value="' . Date('Y-m-d') . '" class="calendar" autocomplete="off"></label>
         </div>
     </div>
     <div class="booking-form-item-type">
@@ -396,16 +425,24 @@ function turio_display_engraving_text_cart($item_data, $cart_item)
     }
     if (isset($cart_item['custom_data']['services_list'])) {
         $tour_booking_date = Egns_Helpers::turio_package_info_by_id($cart_item['custom_data']['tour_id'], 'tour_date');
+        $service_price_for_custom_date = Egns_Helpers::turio_package_info_by_id($cart_item['custom_data']['tour_id'], 'turio_custom_date_pack_services');
         $selected_service_list = '<ul>';
 		foreach ($cart_item['custom_data']['services_list'] as $service) {
 			$get_date_key = explode( '|', $service );
             $person = '';
-            if( !empty( $get_date_key[3] ) ) {
-                $person = formatIdentifier( $get_date_key[3] );
-            }else if( !empty( $get_date_key[2] ) ) {
-                $person = formatIdentifier( $get_date_key[2] );
+            if( count( $get_date_key ) <= 2 ) {
+                if( !empty( $get_date_key[1] ) ) {
+                    $person = formatIdentifier( $get_date_key[1] );
+                }
+                $selected_service_list .= '<li>' . $person . ' - ' . $service_price_for_custom_date[$get_date_key[0]]['turio_custom_date_pack_services_label'] . '-' . get_woocommerce_currency_symbol() . $service_price_for_custom_date[$get_date_key[0]]['turio_custom_date_pack_services_price'] . '</li>';
+            }else{
+                if( !empty( $get_date_key[3] ) ) {
+                    $person = formatIdentifier( $get_date_key[3] );
+                }else if( !empty( $get_date_key[2] ) ) {
+                    $person = formatIdentifier( $get_date_key[2] );
+                }
+                $selected_service_list .= '<li>' . $person . ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_label'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'] . '</li>';
             }
-            $selected_service_list .= '<li>' . $person . ' - ' . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_label'] . '-' . get_woocommerce_currency_symbol() . $tour_booking_date[$get_date_key[1]]['turio_pack_services'][$get_date_key[0]]['turio_pack_services_price'] . '</li>';
 		}
         $selected_service_list .= '</ul>';
         $item_data[] = array(

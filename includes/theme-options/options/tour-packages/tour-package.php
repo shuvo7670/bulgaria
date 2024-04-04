@@ -180,7 +180,26 @@ if (class_exists('CSF')) {
 
 				)
 			),
+			// Add Service with price 
+			array(
+				'id'        => 'turio_custom_date_pack_services',
+				'type'      => 'repeater',
+				'title'     => esc_html__('Add Services for Custom Date', 'turio'),
+				'fields'    => array(
+					array(
+						'id'    => 'turio_custom_date_pack_services_label',
+						'type'  => 'text',
+						'title' => esc_html('Service Label', 'turio'),
+					),
 
+					array(
+						'id'    => 'turio_custom_date_pack_services_price',
+						'type'  => 'text',
+						'title' => esc_html($service_price, 'turio'),
+					),
+
+				)
+			),
 			//Sart partial payment
 			array(
 				'id'      => 'partial_payment_check',
